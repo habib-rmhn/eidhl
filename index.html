@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eidhl — Knowledge Without Borders</title>
+<title>Eidhl - Knowledge Without Borders</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:wght@200..800&family=Space+Grotesk:wght@300..700&display=swa" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
 
 <style>
@@ -25,13 +25,12 @@
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-dim: #475569;
-    --font-display: "Space Grotesk", sans-serif;;
+    --font-display: "Space Grotesk", sans-serif;
     --font-body: "Inter", system-ui, -apple-system, sans-serif;
     --font-mono: "Plus Jakarta Sans", sans-serif;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; font-size: 16px; }
 
   body {
@@ -41,34 +40,21 @@
     font-weight: 400;
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: none;
+    cursor: auto;
   }
-
-  /* CUSTOM CURSOR */
-  .cursor-dot {
-    position: fixed; top: 0; left: 0; width: 6px; height: 6px;
-    background: var(--accent-bright); border-radius: 50%;
-    pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
-    transition: opacity 0.3s;
-  }
-  .cursor-ring {
-    position: fixed; top: 0; left: 0; width: 34px; height: 34px;
-    border: 1.5px solid rgba(96,165,250,0.5); border-radius: 50%;
-    pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s, border-color 0.2s;
-  }
-  body:hover .cursor-dot { opacity: 1; }
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-  /* CANVAS BACKGROUND */
-  #hero-canvas {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    z-index: 0; opacity: 0.65;
+  /* GALAXY CANVAS — fills the entire hero */
+  #galaxy-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
   }
 
   /* NAV */
@@ -114,7 +100,7 @@
     box-shadow: 0 0 35px var(--accent-glow) !important;
     transform: translateY(-1px) !important;
   }
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; background: none; border: none; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
   .hamburger span { width: 22px; height: 1.5px; background: var(--text-secondary); display: block; transition: 0.3s; }
 
   /* HERO */
@@ -124,25 +110,28 @@
     align-items: center; justify-content: center;
     text-align: center;
     padding: 8rem clamp(1.5rem, 5vw, 4rem) 6rem;
-    padding-bottom: 5px;
     overflow: hidden;
   }
+
+  /* Subtle radial overlays on top of the canvas */
   .hero-bg {
-    position: absolute; inset: 0; z-index: 0;
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background:
-      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 85% 60%, rgba(6,182,212,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 10% 80%, rgba(99,102,241,0.08) 0%, transparent 60%),
-      var(--black);
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 85% 60%, rgba(6,182,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 10% 80%, rgba(99,102,241,0.06) 0%, transparent 60%);
   }
+
+  /* Very faint grid on top */
   .hero-grid {
-    position: absolute; inset: 0; z-index: 0;
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background-image:
-      linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
   }
+
   .hero-content { position: relative; z-index: 2; max-width: 900px; }
 
   .hero-badge {
@@ -204,7 +193,6 @@
     font-weight: 600; font-size: 0.95rem;
     box-shadow: 0 0 30px var(--accent-glow);
     transition: transform 0.2s, box-shadow 0.2s;
-    cursor: none;
   }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--accent-glow); }
   .btn-secondary {
@@ -215,7 +203,6 @@
     padding: 0.85rem 2rem; border-radius: 10px;
     font-weight: 500; font-size: 0.95rem;
     transition: background 0.2s, border-color 0.2s, transform 0.2s;
-    cursor: none;
   }
   .btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); border-color: rgba(99,179,255,0.4); }
 
@@ -239,6 +226,7 @@
     position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
     color: var(--text-dim); font-size: 0.75rem; letter-spacing: 0.1em;
+    z-index: 2;
     animation: fadeSlideUp 1.3s 0.8s ease both;
   }
   .scroll-line {
@@ -325,9 +313,7 @@
   .about-feature-text h4 { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 0.25rem; }
   .about-feature-text p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
 
-  .about-visual {
-    position: relative; border-radius: 20px; overflow: hidden;
-  }
+  .about-visual { position: relative; border-radius: 20px; overflow: hidden; }
   .about-card-main {
     background: linear-gradient(135deg, rgba(13,18,32,0.9) 0%, rgba(8,12,20,0.95) 100%);
     border: 1px solid var(--border-bright);
@@ -348,10 +334,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 2rem; color: #fff;
   }
-  .about-card-main h3 {
-    font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
-    letter-spacing: -0.03em; margin-bottom: 0.75rem;
-  }
+  .about-card-main h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
   .about-card-main p { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; }
   .about-card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
   .tag {
@@ -374,10 +357,7 @@
   }
   .timeline-content-left { text-align: right; padding-right: 2.5rem; }
   .timeline-content-right { text-align: left; padding-left: 2.5rem; }
-  .timeline-dot-wrap {
-    display: flex; align-items: center; justify-content: center;
-    position: relative; z-index: 2;
-  }
+  .timeline-dot-wrap { display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }
   .timeline-dot {
     width: 48px; height: 48px; border-radius: 50%;
     background: var(--surface);
@@ -388,10 +368,7 @@
     transition: box-shadow 0.3s, transform 0.3s;
   }
   .timeline-item:hover .timeline-dot { box-shadow: 0 0 40px var(--accent-glow); transform: scale(1.1); }
-  .timeline-year {
-    font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-bright);
-    letter-spacing: 0.1em; margin-bottom: 0.5rem;
-  }
+  .timeline-year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-bright); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
   .timeline-card {
     background: rgba(13,18,32,0.8);
     border: 1px solid var(--border);
@@ -422,13 +399,12 @@
     border-radius: 14px;
     padding: 1.5rem 1.25rem;
     display: flex; flex-direction: column; align-items: center;
-    gap: 0.75rem; text-align: center; cursor: none;
+    gap: 0.75rem; text-align: center;
     transition: border-color 0.3s, background 0.3s, transform 0.3s, box-shadow 0.3s;
     position: relative; overflow: hidden;
   }
   .cat-card::before {
-    content: ''; position: absolute;
-    inset: 0; opacity: 0;
+    content: ''; position: absolute; inset: 0; opacity: 0;
     background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.05));
     transition: opacity 0.3s;
   }
@@ -457,8 +433,7 @@
   .diff-card {
     background: rgba(13,18,32,0.7);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 2rem;
+    border-radius: 18px; padding: 2rem;
     position: relative; overflow: hidden;
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   }
@@ -472,8 +447,7 @@
   .diff-card-number {
     font-family: var(--font-display); font-size: 4rem; font-weight: 800;
     color: rgba(59,130,246,0.08); letter-spacing: -0.05em;
-    line-height: 1; margin-bottom: 1.25rem;
-    user-select: none;
+    line-height: 1; margin-bottom: 1.25rem; user-select: none;
   }
   .diff-card-icon {
     width: 52px; height: 52px; border-radius: 14px;
@@ -623,7 +597,6 @@
     font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em;
     box-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(6,182,212,0.15);
     transition: transform 0.2s, box-shadow 0.2s;
-    cursor: none;
   }
   .cta-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 60px var(--accent-glow), 0 0 100px rgba(6,182,212,0.2); }
   .cta-url { margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); }
@@ -636,7 +609,6 @@
   }
   .footer-inner { max-width: 1200px; margin: 0 auto; }
   .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
-  .footer-brand { }
   .footer-logo {
     font-family: var(--font-display); font-weight: 800; font-size: 1.75rem;
     letter-spacing: -0.03em;
@@ -698,6 +670,7 @@
     .founder-card { grid-template-columns: 1fr; text-align: center; }
     .founder-avatar-wrap { margin: 0 auto; }
     .founder-chips { justify-content: center; }
+    .founder-location { justify-content: center; }
   }
   @media (max-width: 768px) {
     .nav-links { display: none; }
@@ -728,10 +701,6 @@
 </head>
 <body>
 
-<!-- CURSOR -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
 <!-- NAV -->
 <nav id="navbar">
   <a href="https://eidhl.com" target="_blank" class="nav-logo">Eidhl</a>
@@ -758,9 +727,12 @@
 
 <!-- HERO -->
 <section class="hero" id="home">
+  <!-- Galaxy canvas renders in the background -->
+  <canvas id="galaxy-canvas"></canvas>
+
+  <!-- Subtle color overlays -->
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <canvas id="hero-canvas"></canvas>
 
   <div class="hero-content">
     <div class="hero-badge">
@@ -823,7 +795,6 @@
       <p class="section-body reveal reveal-delay-2">
         Eidhl (pronounced "Edel") is a global knowledge platform dedicated to exploration, learning, and discovery. We publish insightful articles across technology, science, history, global affairs, and culture — connecting readers with ideas that expand their understanding of the world.
       </p>
-
       <div class="about-features">
         <div class="about-feature reveal reveal-delay-2">
           <div class="about-feature-icon"><i class="ri-article-line"></i></div>
@@ -848,7 +819,6 @@
         </div>
       </div>
     </div>
-
     <div class="about-visual reveal reveal-delay-3">
       <div class="about-card-main">
         <div class="about-card-orb"><i class="ri-compass-3-line"></i></div>
@@ -878,7 +848,6 @@
   <div class="timeline-container">
     <div class="timeline-line"></div>
 
-    <!-- 2021 -->
     <div class="timeline-item reveal">
       <div class="timeline-content-left">
         <div class="timeline-year">AUGUST 2021</div>
@@ -894,7 +863,6 @@
       <div></div>
     </div>
 
-    <!-- Evolution -->
     <div class="timeline-item reveal">
       <div></div>
       <div class="timeline-dot-wrap">
@@ -910,7 +878,6 @@
       </div>
     </div>
 
-    <!-- 2025 -->
     <div class="timeline-item reveal">
       <div class="timeline-content-left">
         <div class="timeline-year">APRIL 2025</div>
@@ -926,7 +893,6 @@
       <div></div>
     </div>
 
-    <!-- Future -->
     <div class="timeline-item reveal">
       <div></div>
       <div class="timeline-dot-wrap">
@@ -953,7 +919,6 @@
     <h2 class="section-title reveal reveal-delay-1">What We <span class="text-accent">Publish</span></h2>
     <p class="section-body reveal reveal-delay-2">From cutting-edge technology to deep historical research — Eidhl covers the full spectrum of human knowledge and curiosity.</p>
   </div>
-
   <div class="categories-grid">
     <div class="cat-card reveal"><div class="cat-icon"><i class="ri-map-pin-line"></i></div><div class="cat-name">Bangladesh</div></div>
     <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-book-open-line"></i></div><div class="cat-name">Book</div></div>
@@ -1035,7 +1000,6 @@
       <p class="section-body reveal reveal-delay-3" style="margin-top:1rem;">
         The platform actively encourages collaboration between writers and thinkers who want to share knowledge with a global audience — breaking down the traditional barriers of geography and culture.
       </p>
-
       <div class="global-stats">
         <div class="global-stat-card reveal reveal-delay-2">
           <div class="global-stat-num text-accent">18+</div>
@@ -1055,15 +1019,12 @@
         </div>
       </div>
     </div>
-
     <div class="global-visual reveal reveal-delay-3">
       <div class="global-map-container">
         <div class="globe-ring"></div>
         <div class="globe-ring"></div>
         <div class="globe-ring"></div>
-        <div class="globe-center">
-          <i class="ri-earth-line"></i>
-        </div>
+        <div class="globe-center"><i class="ri-earth-line"></i></div>
         <div class="globe-dots">
           <div class="globe-dot"></div>
           <div class="globe-dot"></div>
@@ -1082,7 +1043,6 @@
   <div class="founder-inner">
     <div class="section-label reveal" style="justify-content:center; text-align:center; display:flex;"><i class="ri-user-star-line"></i> Founder</div>
     <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">The Vision Behind <span class="text-accent">Eidhl</span></h2>
-
     <div class="founder-card reveal reveal-delay-2">
       <div class="founder-avatar-wrap">
         <div class="founder-avatar"><i class="ri-user-line"></i></div>
@@ -1190,7 +1150,6 @@
           <a href="https://facebook.com/eidhlco/" class="social-icon" title="Facebook"><i class="ri-facebook-line"></i></a>
         </div>
       </div>
-
       <div class="footer-col">
         <h4>Platform</h4>
         <ul>
@@ -1200,7 +1159,6 @@
           <li><a href="https://eidhl.com/company/authors/" target="_blank"><i class="ri-arrow-right-s-line"></i>Authors</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Topics</h4>
         <ul>
@@ -1210,7 +1168,6 @@
           <li><a href="https://eidhl.com/categories/world/" target="_blank"><i class="ri-arrow-right-s-line"></i>World</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
@@ -1221,7 +1178,6 @@
         </ul>
       </div>
     </div>
-
     <div class="footer-bottom">
       <div class="footer-bottom-left">
         <i class="ri-copyright-line"></i>
@@ -1238,126 +1194,281 @@
 </footer>
 
 <script>
-// CUSTOM CURSOR
-const dot = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
+/* ================================================================
+   GALAXY BACKGROUND — deep-space with Milky Way arm, nebulae,
+   twinkling stars, shooting stars, and slow drift
+================================================================ */
+(function() {
+  const canvas = document.getElementById('galaxy-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, dpr;
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-});
-
-function animateRing() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animateRing);
-}
-animateRing();
-
-document.querySelectorAll('a, button, .cat-card, .diff-card, .vision-card').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    ring.style.width = '50px'; ring.style.height = '50px';
-    ring.style.borderColor = 'rgba(96,165,250,0.8)';
-  });
-  el.addEventListener('mouseleave', () => {
-    ring.style.width = '34px'; ring.style.height = '34px';
-    ring.style.borderColor = 'rgba(96,165,250,0.5)';
-  });
-});
-
-// CANVAS PARTICLES
-const canvas = document.getElementById('hero-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-let W, H;
-
-function resize() {
-  W = canvas.width = canvas.offsetWidth;
-  H = canvas.height = canvas.offsetHeight;
-}
-resize();
-window.addEventListener('resize', () => { resize(); init(); });
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * W;
-    this.y = Math.random() * H;
-    this.size = Math.random() * 1.5 + 0.3;
-    this.speedX = (Math.random() - 0.5) * 0.3;
-    this.speedY = (Math.random() - 0.5) * 0.3;
-    this.opacity = Math.random() * 0.5 + 0.1;
-    this.color = Math.random() > 0.5 ? '59,130,246' : '6,182,212';
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildNebula();
+    buildStarField();
   }
-  update() {
-    this.x += this.speedX; this.y += this.speedY;
-    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
-    ctx.fill();
-  }
-}
 
-function init() {
-  particles = [];
-  const count = Math.min(Math.floor((W * H) / 6000), 200);
-  for (let i = 0; i < count; i++) particles.push(new Particle());
-}
-init();
+  /* ---- Nebula (off-screen cache) ---- */
+  let nebulaCache = null;
+  function buildNebula() {
+    const off = document.createElement('canvas');
+    off.width  = W;
+    off.height = H;
+    const c = off.getContext('2d');
 
-function connectParticles() {
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 100) {
+    // Deep space base
+    c.fillStyle = '#040508';
+    c.fillRect(0, 0, W, H);
+
+    // Milky Way arm — a soft diagonal band
+    const arm = c.createLinearGradient(0, H * 0.7, W, H * 0.1);
+    arm.addColorStop(0,    'rgba(20,30,70,0)');
+    arm.addColorStop(0.25, 'rgba(40,60,130,0.18)');
+    arm.addColorStop(0.45, 'rgba(70,100,200,0.22)');
+    arm.addColorStop(0.55, 'rgba(80,120,220,0.18)');
+    arm.addColorStop(0.75, 'rgba(30,50,100,0.12)');
+    arm.addColorStop(1,    'rgba(10,20,50,0)');
+    c.fillStyle = arm;
+    c.fillRect(0, 0, W, H);
+
+    // Nebula clouds
+    const nebulae = [
+      { x: W*0.2,  y: H*0.25, r: W*0.28, col: 'rgba(59,130,246,', a: 0.07 },
+      { x: W*0.75, y: H*0.60, r: W*0.22, col: 'rgba(6,182,212,',   a: 0.06 },
+      { x: W*0.55, y: H*0.15, r: W*0.18, col: 'rgba(139,92,246,',  a: 0.05 },
+      { x: W*0.85, y: H*0.15, r: W*0.16, col: 'rgba(59,130,246,',  a: 0.04 },
+      { x: W*0.1,  y: H*0.75, r: W*0.20, col: 'rgba(99,102,241,',  a: 0.05 },
+    ];
+    nebulae.forEach(n => {
+      const g = c.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+      g.addColorStop(0,   n.col + n.a + ')');
+      g.addColorStop(0.5, n.col + (n.a * 0.5) + ')');
+      g.addColorStop(1,   n.col + '0)');
+      c.fillStyle = g;
+      c.fillRect(0, 0, W, H);
+    });
+
+    nebulaCache = off;
+  }
+
+  /* ---- Star field ---- */
+  const STAR_COUNT = 520;
+  const stars = [];
+
+  class Star {
+    constructor(seed) {
+      this.init(seed || false);
+    }
+    init(anywhere) {
+      this.x  = Math.random() * W;
+      this.y  = anywhere ? Math.random() * H : Math.random() * H;
+      // size bucket: 70% tiny, 20% small, 10% medium
+      const r = Math.random();
+      if (r < 0.70) this.base = 0.4 + Math.random() * 0.4;
+      else if (r < 0.90) this.base = 0.8 + Math.random() * 0.5;
+      else this.base = 1.3 + Math.random() * 0.8;
+      this.r = this.base;
+
+      // colour temperature
+      const t = Math.random();
+      if (t < 0.15)      this.hue = '180,220,255';  // blue-white
+      else if (t < 0.35) this.hue = '200,220,255';  // blue
+      else if (t < 0.65) this.hue = '255,255,255';  // white
+      else if (t < 0.80) this.hue = '255,240,200';  // yellow-white
+      else               this.hue = '255,200,150';  // orange
+
+      this.baseAlpha  = 0.35 + Math.random() * 0.55;
+      this.alpha      = this.baseAlpha;
+      // twinkle
+      this.twinkleSpeed = 0.003 + Math.random() * 0.012;
+      this.twinklePhase = Math.random() * Math.PI * 2;
+      // very slow drift
+      this.dx = (Math.random() - 0.5) * 0.018;
+      this.dy = (Math.random() - 0.5) * 0.012;
+    }
+    update(t) {
+      this.x += this.dx;
+      this.y += this.dy;
+      if (this.x < -2)  this.x = W + 2;
+      if (this.x > W+2) this.x = -2;
+      if (this.y < -2)  this.y = H + 2;
+      if (this.y > H+2) this.y = -2;
+      // twinkle
+      const tw = Math.sin(t * this.twinkleSpeed + this.twinklePhase);
+      this.alpha = this.baseAlpha + tw * 0.25 * this.baseAlpha;
+      this.r = this.base + tw * 0.15 * this.base;
+    }
+    draw(ctx) {
+      // glow halo for brighter stars
+      if (this.base > 0.9) {
+        const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 4);
+        grd.addColorStop(0,   `rgba(${this.hue},${this.alpha * 0.6})`);
+        grd.addColorStop(1,   `rgba(${this.hue},0)`);
         ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(59,130,246,${0.06 * (1 - dist / 100)})`;
-        ctx.lineWidth = 0.5;
+        ctx.arc(this.x, this.y, this.r * 4, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+      // core
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.hue},${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function buildStarField() {
+    stars.length = 0;
+    for (let i = 0; i < STAR_COUNT; i++) stars.push(new Star(true));
+  }
+
+  /* ---- Shooting stars ---- */
+  const shooters = [];
+  function spawnShooter() {
+    const side = Math.random();
+    let x, y, angle;
+    if (side < 0.5) {
+      x = Math.random() * W; y = 0;
+      angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
+    } else {
+      x = 0; y = Math.random() * H * 0.5;
+      angle = (Math.random() - 0.5) * 0.4;
+    }
+    shooters.push({
+      x, y,
+      vx: Math.cos(angle) * (4 + Math.random() * 5),
+      vy: Math.sin(angle) * (4 + Math.random() * 5),
+      len: 80 + Math.random() * 140,
+      alpha: 1,
+      fade: 0.012 + Math.random() * 0.012,
+      trail: []
+    });
+  }
+
+  let lastShooter = 0;
+  const SHOOTER_INTERVAL = 2800;
+
+  /* ---- Milky Way dense star region (layered micro-stars) ---- */
+  const microStars = [];
+  function buildMicro() {
+    microStars.length = 0;
+    for (let i = 0; i < 300; i++) {
+      // concentrate along the arm diagonal
+      const t  = Math.random();
+      const cx = W * t;
+      const cy = H * (0.7 - t * 0.6) + (Math.random() - 0.5) * H * 0.18;
+      microStars.push({
+        x: cx, y: cy,
+        r: 0.15 + Math.random() * 0.35,
+        a: 0.15 + Math.random() * 0.35,
+        hue: Math.random() > 0.6 ? '180,210,255' : '255,255,255'
+      });
+    }
+  }
+
+  /* ---- Main render loop ---- */
+  let raf;
+  let tick = 0;
+
+  function render(ts) {
+    tick++;
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. Nebula base
+    if (nebulaCache) ctx.drawImage(nebulaCache, 0, 0, W, H);
+
+    // 2. Micro Milky Way stars
+    microStars.forEach(ms => {
+      ctx.beginPath();
+      ctx.arc(ms.x, ms.y, ms.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${ms.hue},${ms.a})`;
+      ctx.fill();
+    });
+
+    // 3. Regular stars
+    stars.forEach(s => { s.update(tick); s.draw(ctx); });
+
+    // 4. Shooting stars
+    if (ts - lastShooter > SHOOTER_INTERVAL) {
+      spawnShooter();
+      lastShooter = ts;
+    }
+    for (let i = shooters.length - 1; i >= 0; i--) {
+      const s = shooters[i];
+      s.trail.push({ x: s.x, y: s.y });
+      if (s.trail.length > 22) s.trail.shift();
+      s.x += s.vx; s.y += s.vy; s.alpha -= s.fade;
+      if (s.alpha <= 0) { shooters.splice(i, 1); continue; }
+
+      // trail
+      if (s.trail.length > 1) {
+        const grad = ctx.createLinearGradient(
+          s.trail[0].x, s.trail[0].y, s.x, s.y
+        );
+        grad.addColorStop(0, `rgba(180,220,255,0)`);
+        grad.addColorStop(1, `rgba(200,230,255,${s.alpha * 0.9})`);
+        ctx.beginPath();
+        ctx.moveTo(s.trail[0].x, s.trail[0].y);
+        s.trail.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.lineTo(s.x, s.y);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = 1.2;
         ctx.stroke();
       }
+      // head glow
+      const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 5);
+      grd.addColorStop(0, `rgba(255,255,255,${s.alpha})`);
+      grd.addColorStop(1, `rgba(180,210,255,0)`);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
     }
+
+    raf = requestAnimationFrame(render);
   }
-}
 
-function animate() {
-  ctx.clearRect(0, 0, W, H);
-  particles.forEach(p => { p.update(); p.draw(); });
-  connectParticles();
-  requestAnimationFrame(animate);
-}
-animate();
-
-// SCROLL REVEAL
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    resize();
+    buildMicro();
+    raf = requestAnimationFrame(render);
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  resize();
+  buildMicro();
+  raf = requestAnimationFrame(render);
+})();
 
-// NAV SCROLL
+/* ================================================================
+   NAV SCROLL
+================================================================ */
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 50) {
-    nav.style.background = 'rgba(4,5,8,0.92)';
-  } else {
-    nav.style.background = 'rgba(4,5,8,0.7)';
-  }
+  nav.style.background = window.scrollY > 50
+    ? 'rgba(4,5,8,0.92)'
+    : 'rgba(4,5,8,0.7)';
 });
 
-// MOBILE MENU
+/* ================================================================
+   SCROLL REVEAL
+================================================================ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ================================================================
+   MOBILE MENU
+================================================================ */
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 let menuOpen = false;
@@ -1368,7 +1479,7 @@ hamburger.addEventListener('click', () => {
   const spans = hamburger.querySelectorAll('span');
   if (menuOpen) {
     spans[0].style.transform = 'rotate(45deg) translate(4px, 4px)';
-    spans[1].style.opacity = '0';
+    spans[1].style.opacity   = '0';
     spans[2].style.transform = 'rotate(-45deg) translate(4px, -4px)';
   } else {
     spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
@@ -1378,52 +1489,65 @@ hamburger.addEventListener('click', () => {
 function closeMobile() {
   menuOpen = false;
   mobileMenu.classList.remove('open');
-  const spans = hamburger.querySelectorAll('span');
-  spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  hamburger.querySelectorAll('span').forEach(s => {
+    s.style.transform = ''; s.style.opacity = '';
+  });
 }
 
-// SMOOTH SCROLL
+/* ================================================================
+   SMOOTH SCROLL
+================================================================ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
 
-// COUNTER ANIMATION
+/* ================================================================
+   COUNTER ANIMATION (hero stats)
+================================================================ */
 function animateCounters() {
   document.querySelectorAll('.hero-stat-num').forEach(el => {
-    const text = el.textContent;
-    const num = parseInt(text);
-    if (!isNaN(num) && num > 0 && num < 1000) {
+    const text = el.textContent.trim();
+    const num  = parseInt(text);
+    if (!isNaN(num) && num > 0 && num < 10000) {
       let current = 0;
+      const hasSuffix = text.includes('+');
       const step = num / 40;
       const timer = setInterval(() => {
         current = Math.min(current + step, num);
-        el.textContent = Math.round(current) + (text.includes('+') ? '+' : '');
+        el.textContent = Math.round(current) + (hasSuffix ? '+' : '');
         if (current >= num) clearInterval(timer);
       }, 30);
     }
   });
 }
-
-// Trigger counters when hero is visible
 const heroObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) { animateCounters(); heroObserver.disconnect(); } });
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { animateCounters(); heroObserver.disconnect(); }
+  });
 }, { threshold: 0.3 });
-const heroEl = document.querySelector('.hero-stats');
-if (heroEl) heroObserver.observe(heroEl);
+const heroStatsEl = document.querySelector('.hero-stats');
+if (heroStatsEl) heroObserver.observe(heroStatsEl);
 
-// PARALLAX HERO
+/* ================================================================
+   PARALLAX HERO (throttled)
+================================================================ */
+let ticking = false;
 window.addEventListener('scroll', () => {
-  const scrolled = window.scrollY;
-  const heroContent = document.querySelector('.hero-content');
-  if (heroContent && scrolled < window.innerHeight) {
-    heroContent.style.transform = `translateY(${scrolled * 0.25}px)`;
-    heroContent.style.opacity = 1 - scrolled / (window.innerHeight * 0.8);
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrolled = window.scrollY;
+      const heroContent = document.querySelector('.hero-content');
+      if (heroContent && scrolled < window.innerHeight) {
+        const progress = scrolled / window.innerHeight;
+        heroContent.style.transform = `translateY(${scrolled * 0.2}px)`;
+        heroContent.style.opacity   = Math.max(0, 1 - progress * 1.2);
+      }
+      ticking = false;
+    });
+    ticking = true;
   }
 });
 </script>
