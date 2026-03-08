@@ -1,13 +1,45 @@
 /* ================================================================
+   LOW-END DEVICE DETECTION
+   Targets truly underpowered hardware regardless of OS.
+   High-end Android phones run full quality just like desktop.
+================================================================ */
+const isLowEndDevice = (function() {
+  // CPU cores: low-end = 4 or fewer logical processors
+  const lowCPU = (navigator.hardwareConcurrency || 4) <= 4;
+
+  // RAM: low-end = 2GB or less (Chrome/Android exposes this)
+  const lowRAM = (navigator.deviceMemory || 4) <= 2;
+
+  // Screen pixel density: very high DPR on a small screen = mid-range chip
+  // We only penalise if DPR > 2.5 AND the screen is small (budget phones)
+  const smallHighDPR = window.devicePixelRatio > 2.5 && window.screen.width < 400;
+
+  // Must hit at least TWO signals to be flagged as low-end
+  const signals = [lowCPU, lowRAM, smallHighDPR].filter(Boolean).length;
+  return signals >= 2;
+})();
+
+/* ================================================================
    GALAXY BACKGROUND
 ================================================================ */
 (function() {
   const canvas = document.getElementById('galaxy-canvas');
   const ctx = canvas.getContext('2d');
   let W, H, dpr;
+  const isLowPerf = isLowEndDevice;
 
   function resize() {
-    dpr = window.devicePixelRatio || 1;
+    // Cap DPR at 1.5 only for confirmed low-end devices
+    dpr = isLowPerf ? Math.min(window.devicePixelRatio || 1, 1.5) : (window.devicePixelRatio || 1);
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildNebula(); buildStarField();
+  }
+
+  function resize() {
+    // Cap DPR at 1.5 for Android performance
+    dpr = isLowPerf ? Math.min(window.devicePixelRatio || 1, 1.5) : (window.devicePixelRatio || 1);
     W = canvas.offsetWidth; H = canvas.offsetHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -19,16 +51,17 @@
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const c = off.getContext('2d');
-    c.fillStyle = '#040508'; c.fillRect(0, 0, W, H);
+    c.fillStyle = '#06040a'; c.fillRect(0, 0, W, H);
+    // Gold/amber nebula tones
     const arm = c.createLinearGradient(0, H * 0.7, W, H * 0.1);
-    arm.addColorStop(0, 'rgba(20,30,70,0)');
-    arm.addColorStop(0.45, 'rgba(70,100,200,0.22)');
-    arm.addColorStop(1, 'rgba(10,20,50,0)');
+    arm.addColorStop(0, 'rgba(40,20,5,0)');
+    arm.addColorStop(0.45, 'rgba(140,80,10,0.18)');
+    arm.addColorStop(1, 'rgba(20,10,3,0)');
     c.fillStyle = arm; c.fillRect(0, 0, W, H);
     const nebulae = [
-      { x: W*0.2, y: H*0.25, r: W*0.28, col: 'rgba(59,130,246,', a: 0.07 },
-      { x: W*0.75, y: H*0.60, r: W*0.22, col: 'rgba(6,182,212,', a: 0.06 },
-      { x: W*0.55, y: H*0.15, r: W*0.18, col: 'rgba(139,92,246,', a: 0.05 },
+      { x: W*0.2, y: H*0.25, r: W*0.28, col: 'rgba(212,160,40,', a: 0.07 },
+      { x: W*0.75, y: H*0.60, r: W*0.22, col: 'rgba(234,124,26,', a: 0.055 },
+      { x: W*0.55, y: H*0.15, r: W*0.18, col: 'rgba(184,134,11,', a: 0.05 },
     ];
     nebulae.forEach(n => {
       const g = c.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
@@ -38,7 +71,8 @@
     nebulaCache = off;
   }
 
-  const STAR_COUNT = 520;
+  // Fewer stars on Android
+  const STAR_COUNT = isLowPerf ? 280 : 520;
   const stars = [];
 
   class Star {
@@ -48,18 +82,19 @@
       const r = Math.random();
       if (r < 0.70) this.base = 0.4 + Math.random() * 0.4;
       else if (r < 0.90) this.base = 0.8 + Math.random() * 0.5;
-      else this.base = 1.3 + Math.random() * 0.8;
+      else this.base = 1.3 + Math.random() * 0.7;
       this.r = this.base;
+      // Gold/warm star colors
       const t = Math.random();
-      if (t < 0.15) this.hue = '180,220,255';
-      else if (t < 0.65) this.hue = '255,255,255';
-      else this.hue = '255,240,200';
+      if (t < 0.20) this.hue = '255,220,140'; // warm gold
+      else if (t < 0.60) this.hue = '255,245,210'; // warm white
+      else this.hue = '255,200,100'; // amber
       this.baseAlpha = 0.35 + Math.random() * 0.55;
       this.alpha = this.baseAlpha;
-      this.twinkleSpeed = 0.003 + Math.random() * 0.012;
+      this.twinkleSpeed = 0.003 + Math.random() * 0.010;
       this.twinklePhase = Math.random() * Math.PI * 2;
-      this.dx = (Math.random() - 0.5) * 0.018;
-      this.dy = (Math.random() - 0.5) * 0.012;
+      this.dx = (Math.random() - 0.5) * 0.016;
+      this.dy = (Math.random() - 0.5) * 0.010;
     }
     update(t) {
       this.x += this.dx; this.y += this.dy;
@@ -68,13 +103,14 @@
       if (this.y < -2) this.y = H + 2;
       if (this.y > H+2) this.y = -2;
       const tw = Math.sin(t * this.twinkleSpeed + this.twinklePhase);
-      this.alpha = this.baseAlpha + tw * 0.25 * this.baseAlpha;
-      this.r = this.base + tw * 0.15 * this.base;
+      this.alpha = this.baseAlpha + tw * 0.22 * this.baseAlpha;
+      this.r = this.base + tw * 0.12 * this.base;
     }
     draw(ctx) {
-      if (this.base > 0.9) {
+      // Skip glow pass on Android
+      if (!isLowPerf && this.base > 0.9) {
         const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 4);
-        grd.addColorStop(0, `rgba(${this.hue},${this.alpha * 0.6})`);
+        grd.addColorStop(0, `rgba(${this.hue},${this.alpha * 0.5})`);
         grd.addColorStop(1, `rgba(${this.hue},0)`);
         ctx.beginPath(); ctx.arc(this.x, this.y, this.r * 4, 0, Math.PI * 2);
         ctx.fillStyle = grd; ctx.fill();
@@ -94,28 +130,39 @@
     shooters.push({
       x: Math.random() * W, y: 0,
       vx: 3 + Math.random() * 4, vy: 3 + Math.random() * 4,
-      alpha: 1, fade: 0.014, trail: []
+      alpha: 1, fade: 0.015, trail: []
     });
   }
 
   let lastShooter = 0, raf, tick = 0;
+  // Throttle on Android
+  let frameSkip = isLowPerf ? 1 : 0;
+  let frameCount = 0;
 
   function render(ts) {
+    frameCount++;
+    if (isLowPerf && frameCount % 2 !== 0) {
+      raf = requestAnimationFrame(render);
+      return;
+    }
     tick++;
     ctx.clearRect(0, 0, W, H);
     if (nebulaCache) ctx.drawImage(nebulaCache, 0, 0, W, H);
     stars.forEach(s => { s.update(tick); s.draw(ctx); });
-    if (ts - lastShooter > 2800) { spawnShooter(); lastShooter = ts; }
+
+    // Fewer shooters on Android
+    if (!isLowPerf && ts - lastShooter > 2800) { spawnShooter(); lastShooter = ts; }
+
     for (let i = shooters.length - 1; i >= 0; i--) {
       const s = shooters[i];
       s.trail.push({ x: s.x, y: s.y });
-      if (s.trail.length > 22) s.trail.shift();
+      if (s.trail.length > 18) s.trail.shift();
       s.x += s.vx; s.y += s.vy; s.alpha -= s.fade;
       if (s.alpha <= 0) { shooters.splice(i, 1); continue; }
       if (s.trail.length > 1) {
         const grad = ctx.createLinearGradient(s.trail[0].x, s.trail[0].y, s.x, s.y);
-        grad.addColorStop(0, `rgba(180,220,255,0)`);
-        grad.addColorStop(1, `rgba(200,230,255,${s.alpha * 0.9})`);
+        grad.addColorStop(0, `rgba(255,200,80,0)`);
+        grad.addColorStop(1, `rgba(255,220,120,${s.alpha * 0.9})`);
         ctx.beginPath(); ctx.moveTo(s.trail[0].x, s.trail[0].y);
         s.trail.forEach(p => ctx.lineTo(p.x, p.y));
         ctx.strokeStyle = grad; ctx.lineWidth = 1.2; ctx.stroke();
@@ -130,12 +177,14 @@
 })();
 
 /* ================================================================
-   3D SOLAR SYSTEM — Three.js
+   3D SOLAR SYSTEM — Three.js (gold/amber palette)
 ================================================================ */
 (function initSolarSystem() {
   const container = document.getElementById('solar-canvas');
   const tooltip = document.getElementById('planet-tooltip');
   if (!container || typeof THREE === 'undefined') return;
+
+  const isLowPerf = isLowEndDevice;
 
   const scene = new THREE.Scene();
   const size = container.parentElement.offsetWidth || 480;
@@ -143,13 +192,20 @@
   camera.position.set(0, 38, 72);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({
+    canvas: container,
+    antialias: !isLowPerf,
+    alpha: true,
+    powerPreference: isLowPerf ? 'low-power' : 'high-performance'
+  });
+  renderer.setPixelRatio(isLowPerf ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
   renderer.setSize(size, size);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
+  renderer.shadowMap.enabled = !isLowPerf;
+  if (!isLowPerf) {
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+  }
 
   function onResize() {
     const s = container.parentElement.offsetWidth || 480;
@@ -159,7 +215,7 @@
 
   (function addStars() {
     const geo = new THREE.BufferGeometry();
-    const n = 2200;
+    const n = isLowPerf ? 1000 : 2200;
     const pos = new Float32Array(n * 3);
     const col = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
@@ -169,10 +225,11 @@
       pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
       pos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i*3+2] = r * Math.cos(phi);
+      // Warm gold/amber star tones
       const t = Math.random();
-      if (t < 0.2) { col[i*3]=0.7; col[i*3+1]=0.85; col[i*3+2]=1.0; }
-      else if (t < 0.5) { col[i*3]=1; col[i*3+1]=1; col[i*3+2]=1; }
-      else { col[i*3]=1; col[i*3+1]=0.95; col[i*3+2]=0.8; }
+      if (t < 0.25) { col[i*3]=1.0; col[i*3+1]=0.88; col[i*3+2]=0.55; }
+      else if (t < 0.60) { col[i*3]=1; col[i*3+1]=0.96; col[i*3+2]=0.85; }
+      else { col[i*3]=1; col[i*3+1]=0.75; col[i*3+2]=0.3; }
     }
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -180,13 +237,15 @@
     scene.add(new THREE.Points(geo, mat));
   })();
 
-  const sunLight = new THREE.PointLight(0xfff4d0, 3.5, 400, 1.4);
-  sunLight.castShadow = true;
-  sunLight.shadow.mapSize.width = 1024;
-  sunLight.shadow.mapSize.height = 1024;
+  const sunLight = new THREE.PointLight(0xffe8a0, 3.5, 400, 1.4);
+  if (!isLowPerf) {
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 1024;
+    sunLight.shadow.mapSize.height = 1024;
+  }
   scene.add(sunLight);
-  scene.add(new THREE.AmbientLight(0x0a0f1e, 0.7));
-  const rimLight = new THREE.DirectionalLight(0x3060ff, 0.18);
+  scene.add(new THREE.AmbientLight(0x1a0e00, 0.7));
+  const rimLight = new THREE.DirectionalLight(0xd4a028, 0.20);
   rimLight.position.set(-80, 40, -80);
   scene.add(rimLight);
 
@@ -225,6 +284,7 @@
     return v / max;
   }
 
+  // Sun with deeper amber/orange tones
   function createSunTexture() {
     const W = 256, H = 128;
     const c = makeCanvas(W, H);
@@ -236,9 +296,9 @@
         const n = fbm(nx, ny, 6, 4, 0);
         const n2 = fbm(nx + n * 0.4, ny + n * 0.3, 4, 6, 77);
         const val = (n + n2 * 0.5) / 1.5;
-        const r = Math.min(255, 200 + val * 55);
-        const g = Math.min(255, 80 + val * 100);
-        const b = Math.min(255, 0 + val * 30);
+        const r = Math.min(255, 220 + val * 35);
+        const g = Math.min(255, 100 + val * 120);
+        const b = Math.min(255, 0 + val * 15);
         const i = (y * W + x) * 4;
         img.data[i] = r; img.data[i+1] = g; img.data[i+2] = b; img.data[i+3] = 255;
       }
@@ -247,11 +307,11 @@
     return new THREE.CanvasTexture(c);
   }
 
-  const sunGeo = new THREE.SphereGeometry(5.2, 64, 64);
+  const sunGeo = new THREE.SphereGeometry(5.2, isLowPerf ? 32 : 64, isLowPerf ? 32 : 64);
   const sunMat = new THREE.MeshStandardMaterial({
     map: createSunTexture(),
     emissive: new THREE.Color(0xff8800),
-    emissiveIntensity: 1.8,
+    emissiveIntensity: 2.0,
     roughness: 1, metalness: 0
   });
   const sun = new THREE.Mesh(sunGeo, sunMat);
@@ -262,10 +322,10 @@
     const c = makeCanvas(128, 128);
     const ctx = c.getContext('2d');
     const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-    grd.addColorStop(0, 'rgba(255,180,40,0.55)');
-    grd.addColorStop(0.35, 'rgba(255,100,20,0.22)');
-    grd.addColorStop(0.7, 'rgba(255,60,0,0.07)');
-    grd.addColorStop(1, 'rgba(255,30,0,0)');
+    grd.addColorStop(0, 'rgba(255,200,50,0.60)');
+    grd.addColorStop(0.35, 'rgba(240,130,20,0.24)');
+    grd.addColorStop(0.7, 'rgba(220,80,0,0.08)');
+    grd.addColorStop(1, 'rgba(200,50,0,0)');
     ctx.fillStyle = grd; ctx.fillRect(0, 0, 128, 128);
     return new THREE.CanvasTexture(c);
   }
@@ -276,32 +336,26 @@
 
   function createEarthTexture() {
     const W = 512, H = 256;
-    const c = makeCanvas(W, H);
-    const ctx = c.getContext('2d');
-    const img = ctx.createImageData(W, H);
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
-        const nx = x / W, ny = y / H;
-        const lat = (ny - 0.5) * Math.PI;
-        const land = fbm(nx, ny, 7, 3.5, 5);
-        const cloud = fbm(nx + 0.3, ny - 0.2, 5, 4, 99);
-        const polar = Math.max(0, Math.abs(lat) - 1.2) * 4;
-        let r, g, b;
-        if (land > 0.52) {
-          const l = (land - 0.52) * 5;
-          r = Math.min(255, 30 + l * 120); g = Math.min(255, 80 + l * 90); b = Math.min(255, 20 + l * 40);
-        } else {
-          const d = land / 0.52;
-          r = Math.min(255, 5 + d * 25); g = Math.min(255, 40 + d * 60); b = Math.min(255, 120 + d * 80);
-        }
-        if (cloud > 0.56) { const cf = Math.min(1, (cloud-0.56)*6); r=r+(255-r)*cf; g=g+(255-g)*cf; b=b+(255-b)*cf; }
-        if (polar > 0) { const pf = Math.min(1, polar); r=r+(240-r)*pf; g=g+(248-g)*pf; b=b+(255-b)*pf; }
-        const i = (y * W + x) * 4;
-        img.data[i] = r; img.data[i+1] = g; img.data[i+2] = b; img.data[i+3] = 255;
+    const c = makeCanvas(W, H); const ctx = c.getContext('2d'); const img = ctx.createImageData(W, H);
+    for (let y = 0; y < H; y++) { for (let x = 0; x < W; x++) {
+      const nx = x / W, ny = y / H;
+      const lat = (ny - 0.5) * Math.PI;
+      const land = fbm(nx, ny, 7, 3.5, 5);
+      const cloud = fbm(nx + 0.3, ny - 0.2, 5, 4, 99);
+      const polar = Math.max(0, Math.abs(lat) - 1.2) * 4;
+      let r, g, b;
+      if (land > 0.52) {
+        const l = (land - 0.52) * 5;
+        r = Math.min(255, 30 + l * 120); g = Math.min(255, 80 + l * 90); b = Math.min(255, 20 + l * 40);
+      } else {
+        const d = land / 0.52;
+        r = Math.min(255, 5 + d * 25); g = Math.min(255, 40 + d * 60); b = Math.min(255, 120 + d * 80);
       }
-    }
-    ctx.putImageData(img, 0, 0);
-    return new THREE.CanvasTexture(c);
+      if (cloud > 0.56) { const cf = Math.min(1, (cloud-0.56)*6); r=r+(255-r)*cf; g=g+(255-g)*cf; b=b+(255-b)*cf; }
+      if (polar > 0) { const pf = Math.min(1, polar); r=r+(240-r)*pf; g=g+(248-g)*pf; b=b+(255-b)*pf; }
+      const i = (y * W + x) * 4;
+      img.data[i] = r; img.data[i+1] = g; img.data[i+2] = b; img.data[i+3] = 255;
+    }} ctx.putImageData(img, 0, 0); return new THREE.CanvasTexture(c);
   }
 
   function createMarsTexture() {
@@ -378,12 +432,12 @@
   function createRingTexture() {
     const c = makeCanvas(512, 1); const ctx = c.getContext('2d');
     const grd = ctx.createLinearGradient(0, 0, 512, 0);
-    grd.addColorStop(0,    'rgba(180,150,90,0)'); grd.addColorStop(0.05, 'rgba(200,170,110,0.55)');
-    grd.addColorStop(0.15, 'rgba(220,190,130,0.75)'); grd.addColorStop(0.25, 'rgba(200,175,115,0.50)');
-    grd.addColorStop(0.35, 'rgba(215,185,120,0.70)'); grd.addColorStop(0.48, 'rgba(190,165,100,0.35)');
-    grd.addColorStop(0.55, 'rgba(205,178,112,0.65)'); grd.addColorStop(0.65, 'rgba(195,170,108,0.55)');
-    grd.addColorStop(0.75, 'rgba(185,158,95,0.40)'); grd.addColorStop(0.85, 'rgba(175,150,90,0.25)');
-    grd.addColorStop(1,    'rgba(165,140,80,0)');
+    grd.addColorStop(0,    'rgba(200,160,80,0)'); grd.addColorStop(0.05, 'rgba(220,180,100,0.55)');
+    grd.addColorStop(0.15, 'rgba(240,200,120,0.75)'); grd.addColorStop(0.25, 'rgba(220,185,110,0.50)');
+    grd.addColorStop(0.35, 'rgba(235,195,115,0.70)'); grd.addColorStop(0.48, 'rgba(210,175,95,0.35)');
+    grd.addColorStop(0.55, 'rgba(225,190,108,0.65)'); grd.addColorStop(0.65, 'rgba(215,180,102,0.55)');
+    grd.addColorStop(0.75, 'rgba(200,165,88,0.40)'); grd.addColorStop(0.85, 'rgba(185,155,78,0.25)');
+    grd.addColorStop(1,    'rgba(170,140,65,0)');
     ctx.fillStyle = grd; ctx.fillRect(0, 0, 512, 1);
     return new THREE.CanvasTexture(c);
   }
@@ -400,18 +454,20 @@
   ];
 
   const planets = [];
+  const sphereDetail = isLowPerf ? 24 : 48;
 
   PLANET_DATA.forEach((pd, idx) => {
-    const orbitGeo = new THREE.RingGeometry(pd.orbit - 0.04, pd.orbit + 0.04, 180);
-    const orbitMat = new THREE.MeshBasicMaterial({ color: 0x3a6a9a, side: THREE.DoubleSide, transparent: true, opacity: 0.18 });
+    const orbitGeo = new THREE.RingGeometry(pd.orbit - 0.04, pd.orbit + 0.04, 120);
+    const orbitMat = new THREE.MeshBasicMaterial({ color: 0x8a6020, side: THREE.DoubleSide, transparent: true, opacity: 0.16 });
     const orbitMesh = new THREE.Mesh(orbitGeo, orbitMat);
     orbitMesh.rotation.x = -Math.PI / 2;
     scene.add(orbitMesh);
 
-    const geo = new THREE.SphereGeometry(pd.radius, 48, 48);
+    const geo = new THREE.SphereGeometry(pd.radius, sphereDetail, sphereDetail);
     const mat = new THREE.MeshStandardMaterial({ map: pd.tex, roughness: 0.75, metalness: 0.05 });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.castShadow = true; mesh.receiveShadow = true; mesh.rotation.z = pd.tilt;
+    if (!isLowPerf) { mesh.castShadow = true; mesh.receiveShadow = true; }
+    mesh.rotation.z = pd.tilt;
 
     const pivot = new THREE.Object3D();
     pivot.rotation.y = (idx / PLANET_DATA.length) * Math.PI * 2;
@@ -421,7 +477,7 @@
 
     let ringMesh = null;
     if (pd.ring) {
-      const ringGeo = new THREE.RingGeometry(pd.radius * 1.38, pd.radius * 2.4, 128, 4);
+      const ringGeo = new THREE.RingGeometry(pd.radius * 1.38, pd.radius * 2.4, 96, 4);
       const pos = ringGeo.attributes.position;
       const uv  = ringGeo.attributes.uv;
       for (let i = 0; i < pos.count; i++) {
@@ -436,16 +492,18 @@
       mesh.add(ringMesh);
     }
 
-    const atmC = makeCanvas(64, 64); const atmCtx = atmC.getContext('2d');
-    const grd = atmCtx.createRadialGradient(32, 32, pd.radius * 4, 32, 32, 32);
-    const atmCol = ['rgba(200,200,200,','rgba(240,180,60,','rgba(60,140,220,','rgba(200,80,30,','rgba(220,170,80,','rgba(220,190,100,','rgba(100,220,220,','rgba(80,100,220,'][idx];
-    grd.addColorStop(0, atmCol + '0.0)'); grd.addColorStop(0.5, atmCol + '0.08)'); grd.addColorStop(0.75, atmCol + '0.12)'); grd.addColorStop(1, atmCol + '0)');
-    atmCtx.fillStyle = grd; atmCtx.fillRect(0, 0, 64, 64);
-    const atmMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(atmC), blending: THREE.AdditiveBlending, transparent: true, opacity: 0.65 });
-    const atmSprite = new THREE.Sprite(atmMat);
-    const atmScale = pd.radius * 4.5;
-    atmSprite.scale.set(atmScale, atmScale, 1);
-    mesh.add(atmSprite);
+    if (!isLowPerf) {
+      const atmC = makeCanvas(64, 64); const atmCtx = atmC.getContext('2d');
+      const grd = atmCtx.createRadialGradient(32, 32, pd.radius * 4, 32, 32, 32);
+      const atmCol = ['rgba(200,200,200,','rgba(240,180,60,','rgba(60,140,220,','rgba(200,80,30,','rgba(220,170,80,','rgba(220,190,100,','rgba(100,220,220,','rgba(80,100,220,'][idx];
+      grd.addColorStop(0, atmCol + '0.0)'); grd.addColorStop(0.5, atmCol + '0.08)'); grd.addColorStop(0.75, atmCol + '0.12)'); grd.addColorStop(1, atmCol + '0)');
+      atmCtx.fillStyle = grd; atmCtx.fillRect(0, 0, 64, 64);
+      const atmMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(atmC), blending: THREE.AdditiveBlending, transparent: true, opacity: 0.65 });
+      const atmSprite = new THREE.Sprite(atmMat);
+      const atmScale = pd.radius * 4.5;
+      atmSprite.scale.set(atmScale, atmScale, 1);
+      mesh.add(atmSprite);
+    }
 
     planets.push({ mesh, pivot, pd, angle: (idx / PLANET_DATA.length) * Math.PI * 2, ringMesh });
   });
@@ -507,9 +565,12 @@
 
   let clock = 0;
   const BASE_SPEED = 0.006;
+  let frameCount = 0;
 
   function animate() {
     requestAnimationFrame(animate);
+    // Skip every other frame on Android
+    if (isLowPerf) { frameCount++; if (frameCount % 2 !== 0) return; }
     clock += BASE_SPEED;
     sun.rotation.y += 0.004;
     planets.forEach(p => {
@@ -520,7 +581,7 @@
       if (p.ringMesh) p.ringMesh.rotation.z += 0.0005;
     });
     if (autoRotate) { rotationY += 0.0018; solarGroup.rotation.y = rotationY; }
-    const pulse = 1 + Math.sin(clock * 2.5) * 0.015;
+    const pulse = 1 + Math.sin(clock * 2.5) * 0.012;
     sun.scale.set(pulse, pulse, pulse);
     corona.scale.set(22 * pulse, 22 * pulse, 1);
     renderer.render(scene, camera);
@@ -529,22 +590,22 @@
 })();
 
 /* ================================================================
-   NAV SCROLL — dynamic blur intensifies on scroll
+   NAV SCROLL
 ================================================================ */
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
   if (window.scrollY > 50) {
-    nav.style.background = 'rgba(4,5,8,0.62)';
-    nav.style.backdropFilter = 'blur(64px) saturate(320%) brightness(0.72)';
-    nav.style.webkitBackdropFilter = 'blur(64px) saturate(320%) brightness(0.72)';
-    nav.style.boxShadow = '0 1px 0 rgba(255,255,255,0.025), 0 12px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.03)';
+    nav.style.background = 'rgba(6,4,10,0.65)';
+    nav.style.backdropFilter = 'blur(50px) saturate(240%) brightness(0.70)';
+    nav.style.webkitBackdropFilter = 'blur(50px) saturate(240%) brightness(0.70)';
+    nav.style.boxShadow = '0 1px 0 rgba(255,210,80,0.03), 0 12px 48px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,200,60,0.03)';
   } else {
-    nav.style.background = 'rgba(4,5,8,0.36)';
-    nav.style.backdropFilter = 'blur(52px) saturate(280%) brightness(0.78)';
-    nav.style.webkitBackdropFilter = 'blur(52px) saturate(280%) brightness(0.78)';
-    nav.style.boxShadow = '0 1px 0 rgba(255,255,255,0.03), 0 8px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.035)';
+    nav.style.background = 'rgba(6,4,10,0.40)';
+    nav.style.backdropFilter = 'blur(40px) saturate(200%) brightness(0.75)';
+    nav.style.webkitBackdropFilter = 'blur(40px) saturate(200%) brightness(0.75)';
+    nav.style.boxShadow = '0 1px 0 rgba(255,220,100,0.04), 0 8px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,210,80,0.04)';
   }
-});
+}, { passive: true });
 
 /* ================================================================
    SCROLL REVEAL
@@ -553,7 +614,7 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) entry.target.classList.add('visible');
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 /* ================================================================
@@ -618,21 +679,25 @@ const heroStatsEl = document.querySelector('.hero-stats');
 if (heroStatsEl) heroObserver.observe(heroStatsEl);
 
 /* ================================================================
-   PARALLAX HERO
+   PARALLAX HERO — disabled only on confirmed low-end devices
 ================================================================ */
-let ticking = false;
-window.addEventListener('scroll', () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      const scrolled = window.scrollY;
-      const heroContent = document.querySelector('.hero-content');
-      if (heroContent && scrolled < window.innerHeight) {
-        const progress = scrolled / window.innerHeight;
-        heroContent.style.transform = `translateY(${scrolled * 0.2}px)`;
-        heroContent.style.opacity = Math.max(0, 1 - progress * 1.2);
-      }
-      ticking = false;
-    });
-    ticking = true;
-  }
-});
+const isMobile = window.innerWidth < 768;
+
+if (!isLowEndDevice) {
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent && scrolled < window.innerHeight) {
+          const progress = scrolled / window.innerHeight;
+          heroContent.style.transform = `translateY(${scrolled * 0.18}px)`;
+          heroContent.style.opacity = Math.max(0, 1 - progress * 1.2);
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
