@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eidhl - Knowledge Without Borders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="" target="_blank" class="nav-logo">Eidhl</a>
+  <ul class="nav-links">
+    <li><a href="#about"><i class="ri-information-line"></i> About</a></li>
+    <li><a href="#history"><i class="ri-time-line"></i> History</a></li>
+    <li><a href="#categories"><i class="ri-grid-line"></i> Content</a></li>
+    <li><a href="#founder"><i class="ri-user-line"></i> Founder</a></li>
+    <li><a href="https://eidhl.com" target="_blank" class="nav-cta"><i class="ri-external-link-line"></i> Visit Eidhl</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#history" onclick="closeMobile()">History</a>
+  <a href="#categories" onclick="closeMobile()">Content</a>
+  <a href="#founder" onclick="closeMobile()">Founder</a>
+  <a href="https://eidhl.com" target="_blank">Visit Eidhl</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <canvas id="galaxy-canvas"></canvas>
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Global Knowledge Platform — Est. 2021
+    </div>
+
+    <h1 class="hero-title">
+      <span class="line1">Knowledge</span>
+      <span class="line2">Without Borders</span>
+    </h1>
+
+    <p class="hero-sub">
+      Eidhl is a next-generation global knowledge platform. We connect curious minds with ideas that shape technology, history, science, and the modern world.
+    </p>
+
+    <div class="hero-actions">
+      <a href="https://eidhl.com" target="_blank" class="btn-primary">
+        <i class="ri-global-line"></i> Explore Eidhl
+      </a>
+      <a href="#about" class="btn-secondary">
+        <i class="ri-arrow-down-line"></i> Learn More
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">18+</div>
+        <div class="hero-stat-label">Content Categories</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2021</div>
+        <div class="hero-stat-label">Founded</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Global</div>
+        <div class="hero-stat-label">Readership</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">∞</div>
+        <div class="hero-stat-label">Ideas Shared</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-label reveal"><i class="ri-information-line"></i> What is Eidhl</div>
+      <h2 class="section-title reveal reveal-delay-1">A Platform Built for <span class="text-accent">Curious Minds</span></h2>
+      <p class="section-body reveal reveal-delay-2">
+        Eidhl (pronounced "Edel") is a global knowledge platform dedicated to exploration, learning, and discovery. We publish insightful articles across technology, science, history, global affairs, and culture — connecting readers with ideas that expand their understanding of the world.
+      </p>
+      <div class="about-features">
+        <div class="about-feature reveal reveal-delay-2">
+          <div class="about-feature-icon"><i class="ri-article-line"></i></div>
+          <div class="about-feature-text">
+            <h4>Deep Journalism & Analysis</h4>
+            <p>In-depth research, investigative writing, and expert analysis on topics that matter globally.</p>
+          </div>
+        </div>
+        <div class="about-feature reveal reveal-delay-3">
+          <div class="about-feature-icon"><i class="ri-earth-line"></i></div>
+          <div class="about-feature-text">
+            <h4>Global Coverage</h4>
+            <p>Stories, perspectives, and ideas from every corner of the world — no borders, no limits.</p>
+          </div>
+        </div>
+        <div class="about-feature reveal reveal-delay-4">
+          <div class="about-feature-icon"><i class="ri-lightbulb-line"></i></div>
+          <div class="about-feature-text">
+            <h4>Knowledge for Everyone</h4>
+            <p>Making complex topics accessible, engaging, and meaningful to every type of reader.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual reveal reveal-delay-3">
+      <div class="about-card-main">
+        <div class="about-card-orb"><i class="ri-compass-3-line"></i></div>
+        <h3>The Eidhl <span class="text-accent">Philosophy</span></h3>
+        <p>We believe knowledge should be borderless. Eidhl exists to inspire curiosity, share knowledge, and connect people with ideas that shape the modern world. Every article we publish is a bridge between a reader and a new perspective.</p>
+        <div class="about-card-tags">
+          <span class="tag">Curiosity</span>
+          <span class="tag">Discovery</span>
+          <span class="tag">Learning</span>
+          <span class="tag">Global</span>
+          <span class="tag">Ideas</span>
+          <span class="tag">Innovation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div style="max-width:800px; margin:0 auto; text-align:center;">
+    <div class="section-label reveal" style="justify-content:center;"><i class="ri-history-line"></i> Our Journey</div>
+    <h2 class="section-title reveal reveal-delay-1">The Story of <span class="text-accent">Eidhl</span></h2>
+    <p class="section-body reveal reveal-delay-2" style="margin:0 auto;">From a focused tech discussion platform to a global knowledge ecosystem — the evolution of a vision.</p>
+  </div>
+
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div class="timeline-item reveal">
+      <div class="timeline-content-left">
+        <div class="timeline-year">AUGUST 2021</div>
+        <div class="timeline-card">
+          <h3>HR Tech City Founded</h3>
+          <p>The platform launched with a vision to create a dedicated space for technology discussions, digital knowledge sharing, and industry insights. Built from Dhaka, Bangladesh with a global ambition.</p>
+          <span class="timeline-badge">Origin</span>
+        </div>
+      </div>
+      <div class="timeline-dot-wrap">
+        <div class="timeline-dot"><i class="ri-rocket-line"></i></div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div></div>
+      <div class="timeline-dot-wrap">
+        <div class="timeline-dot"><i class="ri-expand-left-right-line"></i></div>
+      </div>
+      <div class="timeline-content-right">
+        <div class="timeline-year">2021 — 2025</div>
+        <div class="timeline-card">
+          <h3>Vision Expanded</h3>
+          <p>As the readership grew and contributors joined from around the world, the platform's scope expanded beyond technology into history, science, culture, global affairs, and beyond.</p>
+          <span class="timeline-badge">Growth Phase</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-content-left">
+        <div class="timeline-year">APRIL 2025</div>
+        <div class="timeline-card">
+          <h3>Rebranded as Eidhl</h3>
+          <p>To reflect its transformed global mission, the platform was officially rebranded as <strong style="color:var(--accent-bright)">Eidhl</strong> — symbolising a wider commitment to global knowledge exploration, intellectual discovery, and innovation.</p>
+          <span class="timeline-badge">Rebrand</span>
+        </div>
+      </div>
+      <div class="timeline-dot-wrap">
+        <div class="timeline-dot"><i class="ri-star-line"></i></div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div></div>
+      <div class="timeline-dot-wrap">
+        <div class="timeline-dot" style="border-color:var(--orange); box-shadow:0 0 20px var(--orange-glow);">
+          <i class="ri-sparkling-line" style="color:var(--orange);"></i>
+        </div>
+      </div>
+      <div class="timeline-content-right">
+        <div class="timeline-year">THE FUTURE</div>
+        <div class="timeline-card">
+          <h3>A Global Knowledge Ecosystem</h3>
+          <p>Building toward a seamless digital ecosystem where information, technology, and people connect without boundaries — setting a new standard for knowledge platforms worldwide.</p>
+          <span class="timeline-badge" style="background:linear-gradient(135deg,var(--orange),var(--accent));">In Progress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="categories-header">
+    <div class="section-label reveal"><i class="ri-apps-line"></i> Content Universe</div>
+    <h2 class="section-title reveal reveal-delay-1">What We <span class="text-accent">Publish</span></h2>
+    <p class="section-body reveal reveal-delay-2">From cutting-edge technology to deep historical research — Eidhl covers the full spectrum of human knowledge and curiosity.</p>
+  </div>
+  <div class="categories-grid">
+    <div class="cat-card reveal"><div class="cat-icon"><i class="ri-map-pin-line"></i></div><div class="cat-name">Bangladesh</div></div>
+    <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-book-open-line"></i></div><div class="cat-name">Book</div></div>
+    <div class="cat-card reveal reveal-delay-2"><div class="cat-icon"><i class="ri-briefcase-line"></i></div><div class="cat-name">Business</div></div>
+    <div class="cat-card reveal reveal-delay-3"><div class="cat-icon"><i class="ri-shield-line"></i></div><div class="cat-name">Crime</div></div>
+    <div class="cat-card reveal"><div class="cat-icon"><i class="ri-graduation-cap-line"></i></div><div class="cat-name">Education</div></div>
+    <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-movie-2-line"></i></div><div class="cat-name">Entertainment</div></div>
+    <div class="cat-card reveal reveal-delay-2"><div class="cat-icon"><i class="ri-leaf-line"></i></div><div class="cat-name">Environment</div></div>
+    <div class="cat-card reveal reveal-delay-3"><div class="cat-icon"><i class="ri-heart-pulse-line"></i></div><div class="cat-name">Health</div></div>
+    <div class="cat-card reveal"><div class="cat-icon"><i class="ri-ancient-gate-line"></i></div><div class="cat-name">History</div></div>
+    <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-sun-line"></i></div><div class="cat-name">Lifestyle</div></div>
+    <div class="cat-card reveal reveal-delay-2"><div class="cat-icon"><i class="ri-question-mark"></i></div><div class="cat-name">Mystery</div></div>
+    <div class="cat-card reveal reveal-delay-3"><div class="cat-icon"><i class="ri-government-line"></i></div><div class="cat-name">Politics</div></div>
+    <div class="cat-card reveal"><div class="cat-icon"><i class="ri-flask-line"></i></div><div class="cat-name">Science</div></div>
+    <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-trophy-line"></i></div><div class="cat-name">Sports</div></div>
+    <div class="cat-card reveal reveal-delay-2"><div class="cat-icon"><i class="ri-cpu-line"></i></div><div class="cat-name">Technology</div></div>
+    <div class="cat-card reveal reveal-delay-3"><div class="cat-icon"><i class="ri-plane-line"></i></div><div class="cat-name">Travel</div></div>
+    <div class="cat-card reveal"><div class="cat-icon"><i class="ri-earth-line"></i></div><div class="cat-name">World</div></div>
+    <div class="cat-card reveal reveal-delay-1"><div class="cat-icon"><i class="ri-more-line"></i></div><div class="cat-name">Others</div></div>
+  </div>
+</section>
+
+<!-- DIFFERENT -->
+<section id="different">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label reveal"><i class="ri-award-line"></i> Our Difference</div>
+    <h2 class="section-title reveal reveal-delay-1">What Makes Eidhl <span class="text-accent">Unique</span></h2>
+    <p class="section-body reveal reveal-delay-2">We are not just another content platform. Eidhl is a philosophy — a commitment to intellectual depth, global perspective, and meaningful discovery.</p>
+  </div>
+  <div class="different-grid">
+    <div class="diff-card reveal">
+      <div class="diff-card-number">01</div>
+      <div class="diff-card-icon"><i class="ri-search-eye-line"></i></div>
+      <h3>Deep Research, Not Clickbait</h3>
+      <p>Every article on Eidhl goes beyond headlines. We commit to thorough research, investigative depth, and intellectual honesty in everything we publish.</p>
+    </div>
+    <div class="diff-card reveal reveal-delay-1">
+      <div class="diff-card-number">02</div>
+      <div class="diff-card-icon"><i class="ri-global-line"></i></div>
+      <h3>Borderless Perspective</h3>
+      <p>With contributors and readers across the globe, Eidhl presents ideas from diverse cultures, regions, and worldviews — free from geographic or ideological borders.</p>
+    </div>
+    <div class="diff-card reveal reveal-delay-2">
+      <div class="diff-card-number">03</div>
+      <div class="diff-card-icon"><i class="ri-user-heart-line"></i></div>
+      <h3>Reader-First Experience</h3>
+      <p>Designed for curiosity. Every design decision, editorial choice, and feature is built around giving readers the cleanest, most enriching experience possible.</p>
+    </div>
+    <div class="diff-card reveal reveal-delay-1">
+      <div class="diff-card-number">04</div>
+      <div class="diff-card-icon"><i class="ri-team-line"></i></div>
+      <h3>Community of Thinkers</h3>
+      <p>Eidhl is more than a publication — it is a growing ecosystem of writers, researchers, and intellectuals united by the love of ideas and meaningful storytelling.</p>
+    </div>
+    <div class="diff-card reveal reveal-delay-2">
+      <div class="diff-card-number">05</div>
+      <div class="diff-card-icon"><i class="ri-time-line"></i></div>
+      <h3>Timeless & Timely</h3>
+      <p>We balance in-depth historical research with coverage of the latest developments — offering both the context of the past and the urgency of the present.</p>
+    </div>
+    <div class="diff-card reveal reveal-delay-3">
+      <div class="diff-card-number">06</div>
+      <div class="diff-card-icon"><i class="ri-open-source-line"></i></div>
+      <h3>Open Knowledge Mindset</h3>
+      <p>Eidhl believes knowledge belongs to everyone. Our mission is to break down barriers to information and make quality content accessible to every reader worldwide.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL REACH -->
+<section id="global">
+  <div class="global-inner">
+    <div>
+      <div class="section-label reveal"><i class="ri-earth-line"></i> Global Reach</div>
+      <h2 class="section-title reveal reveal-delay-1">Connecting the World Through <span class="text-accent">Knowledge</span></h2>
+      <p class="section-body reveal reveal-delay-2">
+        Eidhl operates as a globally distributed knowledge network. Writers, researchers, and readers from across continents contribute to and consume content on the platform — creating a living, growing ecosystem of ideas.
+      </p>
+      <p class="section-body reveal reveal-delay-3" style="margin-top:1rem;">
+        The platform actively encourages collaboration between writers and thinkers who want to share knowledge with a global audience — breaking down the traditional barriers of geography and culture.
+      </p>
+      <div class="global-stats">
+        <div class="global-stat-card reveal reveal-delay-2">
+          <div class="global-stat-num text-accent">18+</div>
+          <div class="global-stat-label">Knowledge Categories</div>
+        </div>
+        <div class="global-stat-card reveal reveal-delay-3">
+          <div class="global-stat-num text-accent">Global</div>
+          <div class="global-stat-label">Contributor Network</div>
+        </div>
+        <div class="global-stat-card reveal reveal-delay-4">
+          <div class="global-stat-num text-accent">BD</div>
+          <div class="global-stat-label">Founded in Bangladesh</div>
+        </div>
+        <div class="global-stat-card reveal reveal-delay-5">
+          <div class="global-stat-num text-accent">2025</div>
+          <div class="global-stat-label">Rebrand to Eidhl</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="global-visual reveal reveal-delay-3">
+      <div class="solar-system-wrap">
+        <canvas id="solar-canvas"></canvas>
+        <div class="planet-tooltip" id="planet-tooltip"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section id="founder">
+  <div class="founder-inner">
+    <div class="section-label reveal" style="justify-content:center; text-align:center; display:flex;"><i class="ri-user-star-line"></i> Founder</div>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">The Vision Behind <span class="text-accent">Eidhl</span></h2>
+    <div class="founder-card reveal reveal-delay-2">
+      <div class="founder-avatar-wrap">
+        <div class="founder-avatar"><i class="ri-user-line"></i></div>
+        <div class="founder-avatar-ring"></div>
+      </div>
+      <div>
+        <div class="founder-name">Habibur Rahman</div>
+        <div class="founder-title">FOUNDER & CEO — EIDHL</div>
+        <div class="founder-location">
+          <i class="ri-map-pin-line"></i> Dhaka, Bangladesh
+        </div>
+        <p class="founder-bio">
+          Habibur Rahman is a technology enthusiast and Computer Science student based in Dhaka, Bangladesh. With a deep passion for digital knowledge sharing, he founded Eidhl to create a global platform where information transcends borders and ideas connect people across the world.
+          <br><br>
+          His mission is to build digital platforms that empower readers through information, spark intellectual curiosity, and foster a global community of thinkers — one article at a time.
+        </p>
+        <div class="founder-chips">
+          <div class="chip"><i class="ri-code-line"></i> Tech Enthusiast</div>
+          <div class="chip"><i class="ri-graduation-cap-line"></i> CSE Student</div>
+          <div class="chip"><i class="ri-lightbulb-line"></i> Entrepreneur</div>
+          <div class="chip"><i class="ri-earth-line"></i> Global Vision</div>
+          <div class="chip"><i class="ri-map-pin-line"></i> Dhaka, BD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="vision-inner">
+    <div style="max-width:700px;">
+      <div class="section-label reveal"><i class="ri-telescope-line"></i> Future Vision</div>
+      <h2 class="section-title reveal reveal-delay-1">Where Eidhl is <span class="text-accent">Headed</span></h2>
+      <p class="section-body reveal reveal-delay-2">The long-term vision for Eidhl is to become the world's most trusted and accessible digital knowledge ecosystem — where information, technology, and people connect seamlessly across all borders.</p>
+    </div>
+    <div class="vision-grid">
+      <div class="vision-card reveal">
+        <div class="vision-card-accent"></div>
+        <div class="vision-card-inner">
+          <div class="vision-card-icon"><i class="ri-building-4-line"></i></div>
+          <h3>Institutional Knowledge Hub</h3>
+          <p>Building Eidhl into a trusted institutional resource for research, education, and intellectual development globally.</p>
+        </div>
+      </div>
+      <div class="vision-card reveal reveal-delay-1">
+        <div class="vision-card-accent"></div>
+        <div class="vision-card-inner">
+          <div class="vision-card-icon"><i class="ri-team-line"></i></div>
+          <h3>Expanded Contributor Network</h3>
+          <p>Growing a network of world-class writers, researchers, and subject-matter experts contributing from every continent.</p>
+        </div>
+      </div>
+      <div class="vision-card reveal reveal-delay-2">
+        <div class="vision-card-accent"></div>
+        <div class="vision-card-inner">
+          <div class="vision-card-icon"><i class="ri-cpu-line"></i></div>
+          <h3>Technology-Powered Discovery</h3>
+          <p>Leveraging advanced technology to personalise knowledge discovery — connecting each reader with content that truly matters to them.</p>
+        </div>
+      </div>
+      <div class="vision-card reveal reveal-delay-3">
+        <div class="vision-card-accent"></div>
+        <div class="vision-card-inner">
+          <div class="vision-card-icon"><i class="ri-translate-2"></i></div>
+          <h3>Multilingual Knowledge Access</h3>
+          <p>Breaking language barriers by making Eidhl's content accessible to readers in their native languages across the globe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <div class="section-label reveal" style="justify-content:center; display:flex;"><i class="ri-arrow-right-circle-line"></i> Begin Exploring</div>
+    <h2 class="cta-title reveal reveal-delay-1">
+      Ready to Explore<br><span class="text-accent">Knowledge?</span>
+    </h2>
+    <p class="cta-subtitle reveal reveal-delay-2">
+      Join thousands of curious readers who visit Eidhl every day to discover ideas, stories, and knowledge from around the world. Your next great discovery is waiting.
+    </p>
+    <a href="https://eidhl.com" target="_blank" class="cta-button reveal reveal-delay-3">
+      <i class="ri-global-line"></i>
+      Visit Eidhl Now
+      <i class="ri-arrow-right-up-line"></i>
+    </a>
+    <div class="cta-url reveal reveal-delay-4">Official platform at <span>eidhl.com</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="footer-logo">Eidhl</span>
+        <p>A global knowledge platform dedicated to exploration, learning, and discovery. Connecting curious minds with ideas that shape the modern world.</p>
+        <div class="footer-social">
+          <a href="https://eidhl.com" target="_blank" class="social-icon" title="Website"><i class="ri-global-line"></i></a>
+          <a href="https://x.com/eidhlco" class="social-icon" title="Twitter/X"><i class="ri-twitter-x-line"></i></a>
+          <a href="https://linkedin.com/company/eidhlco/" class="social-icon" title="LinkedIn"><i class="ri-linkedin-line"></i></a>
+          <a href="https://facebook.com/eidhlco/" class="social-icon" title="Facebook"><i class="ri-facebook-line"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="https://eidhl.com" target="_blank"><i class="ri-arrow-right-s-line"></i>Home</a></li>
+          <li><a href="https://eidhl.com/company/about-us/" target="_blank"><i class="ri-arrow-right-s-line"></i>About</a></li>
+          <li><a href="https://eidhl.com/categories/" target="_blank"><i class="ri-arrow-right-s-line"></i>Content</a></li>
+          <li><a href="https://eidhl.com/company/authors/" target="_blank"><i class="ri-arrow-right-s-line"></i>Authors</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Topics</h4>
+        <ul>
+          <li><a href="https://eidhl.com/categories/technology/" target="_blank"><i class="ri-arrow-right-s-line"></i>Technology</a></li>
+          <li><a href="https://eidhl.com/categories/sports/" target="_blank"><i class="ri-arrow-right-s-line"></i>Sports</a></li>
+          <li><a href="https://eidhl.com/categories/education/" target="_blank"><i class="ri-arrow-right-s-line"></i>Education</a></li>
+          <li><a href="https://eidhl.com/categories/world/" target="_blank"><i class="ri-arrow-right-s-line"></i>World</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#founder"><i class="ri-arrow-right-s-line"></i>Founder</a></li>
+          <li><a href="#vision"><i class="ri-arrow-right-s-line"></i>Vision</a></li>
+          <li><a href="https://eidhl.com/contact/" target="_blank"><i class="ri-arrow-right-s-line"></i>Contact</a></li>
+          <li><a href="https://eidhl.com/subscription/" target="_blank"><i class="ri-arrow-right-s-line"></i>Subscribe</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <i class="ri-copyright-line"></i>
+        2021–2026 Eidhl. All rights reserved.
+        <span class="footer-badge"><i class="ri-map-pin-2-line"></i> Dhaka, Bangladesh</span>
+      </div>
+      <div class="footer-bottom-right">
+        <a href="https://eidhl.com" target="_blank">eidhl.com</a>
+        <a href="https://eidhl.com/company/privacy-policy/">Privacy</a>
+        <a href="https://eidhl.com/company/terms-and-conditions/">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- THREE.JS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="./assets/scripts.js"></script>
+</body>
+</html>
